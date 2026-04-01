@@ -10,7 +10,8 @@
   },
   "scripts": {
     "build": "bun run build.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "link": "unlink /usr/local/bin/selfclaude || true && chmod +x \"$(pwd)/dist/cli.js\" && ln -s \"$(pwd)/dist/cli.js\" /usr/local/bin/selfclaude"
   },
   "dependencies": {
     "@alcalzone/ansi-tokenize": "^0.1.0",
