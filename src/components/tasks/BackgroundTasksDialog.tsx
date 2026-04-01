@@ -1,7 +1,7 @@
 import { c as _c } from "react/compiler-runtime";
 import { feature } from 'bun:bundle';
 import figures from 'figures';
-import React, { type ReactNode, useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
+import React, { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isCoordinatorMode } from 'src/coordinator/coordinatorMode.js';
 import { useTerminalSize } from 'src/hooks/useTerminalSize.js';
 import { useAppState, useSetAppState } from 'src/state/AppState.js';
@@ -319,9 +319,11 @@ export function BackgroundTasksDialog({
     await RemoteAgentTask.kill(taskId_3, setAppState);
   }
 
-  // Wrap onDone in useEffectEvent to get a stable reference that always calls
+  // Wrap onDone in a stable ref+callback to get a stable reference that always calls
   // the current onDone callback without causing the effect to re-fire.
-  const onDoneEvent = useEffectEvent(onDone);
+  const _ref_onDone = useRef(onDone);
+  _ref_onDone.current = onDone;
+  const onDoneEvent = useCallback((...args: any[]) => (_ref_onDone.current as any)(...args), []);
   useEffect(() => {
     if (viewState.mode !== 'list') {
       const task = (typedTasks ?? {})[viewState.itemId];
